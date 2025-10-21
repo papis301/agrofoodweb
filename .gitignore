@@ -1,0 +1,13 @@
+# Ignorer les fichiers sensibles Firebase
+serviceAccount.json
+serviceAccountKey.json
+
+# Ignorer les fichiers de configuration locaux
+.env
+*.log
+
+# Ignorer les dossiers système
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
