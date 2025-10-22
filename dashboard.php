@@ -82,7 +82,7 @@ if (!isset($_SESSION['user_phone'])) {
     <div class="info">
         <h2>Bienvenue 👋</h2>
         <p><strong>Téléphone :</strong> <?= htmlspecialchars($_SESSION['user_phone']) ?></p>
-        <p><strong>Solde :</strong> <?= htmlspecialchars($_SESSION['solde']) ?> FCFA</p>
+        
         <p><strong>Statut :</strong> <?= htmlspecialchars($_SESSION['statut']) ?></p>
 
         <!-- Bouton vers la gestion des produits -->
