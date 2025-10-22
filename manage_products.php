@@ -140,11 +140,20 @@ $result = $conn->query($sql);
                     <td><?= htmlspecialchars($row['name']) ?></td>
                     <td><?= htmlspecialchars($row['price']) ?> FCFA</td>
                     <td>
-                        <?php if (!empty($row['images'])): ?>
-                            <img src="<?= htmlspecialchars($row['images']) ?>" width="60" height="60" style="border-radius:5px;">
-                        <?php else: ?>
-                            Aucune
-                        <?php endif; ?>
+                        <?php 
+                        if (!empty($row['images'])) {
+                            $images = json_decode($row['images'], true);
+                            if (is_array($images)) {
+                                foreach ($images as $img) {
+                                    echo "<img src='".htmlspecialchars($img)."' width='60' height='60' style='border-radius:5px; margin:2px;'>";
+                                }
+                            } else {
+                                echo "Aucune";
+                            }
+                        } else {
+                            echo "Aucune";
+                        }
+                        ?>
                     </td>
                     <td><?= htmlspecialchars($row['created_at']) ?></td>
                     <td class="actions">
