@@ -3,52 +3,59 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require 'firebase_config.php';
+
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $phone = trim($_POST['phone'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $phone = trim($_POST['phone']);
+    $password = trim($_POST['password']);
 
-    if (empty($phone) || empty($password)) {
-        echo "❌ Tous les champs sont obligatoires.";
-        exit;
+    $projectId = "its2025"; // 🔹 remplace par ton vrai ID
+    $url = "https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/usersagrofood";
+
+    $response = file_get_contents($url);
+    if ($response === FALSE) {
+        die("❌ Erreur de connexion à Firestore (REST).");
     }
 
-    $db = getFirestore();
-    $users = $db->collection('usersagrofood')->where('phone', '=', $phone)->documents();
+    $data = json_decode($response, true);
 
-    if ($users->isEmpty()) {
-        echo "❌ Ce numéro n'existe pas.";
-        exit;
+    if (!isset($data['documents'])) {
+        die("❌ Aucun utilisateur trouvé (vérifie la collection Firestore).");
     }
 
-    foreach ($users as $user) {
-        $data = $user->data();
-        if ($password === $data['password']) {
+    foreach ($data['documents'] as $doc) {
+        $fields = $doc['fields'];
+        $dbPhone = $fields['phone']['stringValue'] ?? '';
+        $dbPassword = $fields['password']['stringValue'] ?? '';
+        $statut = $fields['statut']['stringValue'] ?? 'désactivé';
+        $solde = $fields['solde']['integerValue'] ?? 0;
+        $firebase_id = basename($doc['name']);
 
-            // Vérifie le statut
-            if ($data['statut'] !== 'activé') {
-                echo "⚠️ Votre compte est désactivé.";
+        if ($dbPhone === $phone) {
+            if ($password === $dbPassword) {
+                if ($statut !== 'activé') {
+                    die("⚠️ Compte désactivé.");
+                }
+
+                // ✅ Connexion réussie
+                $_SESSION['user_phone'] = $dbPhone;
+                $_SESSION['solde'] = $solde;
+                $_SESSION['statut'] = $statut;
+                $_SESSION['firebase_id'] = $firebase_id;
+
+                header("Location: dashboard.php");
                 exit;
+            } else {
+                die("❌ Mot de passe incorrect.");
             }
-
-            // ✅ Stocker toutes les infos utiles en session
-            $_SESSION['user_phone']   = $data['phone'];              // téléphone
-            $_SESSION['solde']        = $data['solde'] ?? 0;         // solde
-            $_SESSION['statut']       = $data['statut'];             // statut
-            $_SESSION['firebase_id']  = $user->id();                 // ✅ ID Firestore du document
-            $_SESSION['user_name']    = $data['name'] ?? '';         // optionnel : nom utilisateur
-
-            // Redirection vers le tableau de bord
-            header("Location: dashboard.php");
-            exit;
-        } else {
-            echo "❌ Mot de passe incorrect.";
-            exit;
         }
     }
+
+    echo "❌ Utilisateur introuvable.";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
