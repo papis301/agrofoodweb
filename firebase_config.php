@@ -1,14 +1,13 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require 'vendor/autoload.php';
 
 use Google\Cloud\Firestore\FirestoreClient;
 
-putenv('GOOGLE_APPLICATION_CREDENTIALS=' . __DIR__ . '/serviceAccountKey.json');
-
-function getFirestore() {
-    $firestore = new FirestoreClient([
-        'projectId' => 'its2025',
-        'apiEndpoint' => 'firestore.googleapis.com'
+function getFirestore()
+{
+    return new FirestoreClient([
+        'projectId' => 'ton-project-id',
+        'apiEndpoint' => 'firestore.googleapis.com', // Force REST
     ]);
-    return $firestore;
 }
+?>
