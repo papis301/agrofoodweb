@@ -16,14 +16,7 @@ if (!isset($_GET['id'])) {
 $product_id = intval($_GET['id']);
 
 // --- Connexion MySQL ---
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "agroweb2";
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) {
-    die("Erreur de connexion : " . $conn->connect_error);
-}
+require 'db.php';
 
 // --- Récupère le produit pour supprimer ses images ---
 $result = $conn->query("SELECT images FROM products WHERE id = $product_id");

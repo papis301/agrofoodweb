@@ -8,14 +8,7 @@ if (!isset($_SESSION['user_phone']) || !isset($_SESSION['firebase_id'])) {
 }
 
 // --- Connexion à la base de données ---
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "agroweb2";
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) {
-    die("Erreur de connexion : " . $conn->connect_error);
-}
+require 'db.php';
 
 // --- Récupération des infos utilisateur ---
 $telephone = $_SESSION['user_phone'];

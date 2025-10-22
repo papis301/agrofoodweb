@@ -6,16 +6,7 @@ if (!isset($_SESSION['user_phone'])) {
 }
 
 // 🔹 Connexion à la base de données MySQL
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "agroweb2";
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-// Vérification connexion
-if ($conn->connect_error) {
-    die("Erreur de connexion : " . $conn->connect_error);
-}
+require 'db.php';
 
 // 🔹 Récupération des produits du téléphone connecté
 $telephone = $_SESSION['user_phone'];
