@@ -22,15 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($users as $user) {
         $data = $user->data();
         if ($password === $data['password']) {
+
             // Vérifie le statut
             if ($data['statut'] !== 'activé') {
                 echo "⚠️ Votre compte est désactivé.";
                 exit;
             }
 
-            $_SESSION['user_phone'] = $data['phone'];
-            $_SESSION['solde'] = $data['solde'];
-            $_SESSION['statut'] = $data['statut'];
+            // ✅ Stocker toutes les infos utiles en session
+            $_SESSION['user_phone']   = $data['phone'];              // téléphone
+            $_SESSION['solde']        = $data['solde'] ?? 0;         // solde
+            $_SESSION['statut']       = $data['statut'];             // statut
+            $_SESSION['firebase_id']  = $user->id();                 // ✅ ID Firestore du document
+            $_SESSION['user_name']    = $data['name'] ?? '';         // optionnel : nom utilisateur
+
+            // Redirection vers le tableau de bord
             header("Location: dashboard.php");
             exit;
         } else {
