@@ -11,4 +11,4 @@ serviceAccountKey.json
 /node_modules/
 /.idea/
 /.vscode/
-/uploads
+/uploads/
