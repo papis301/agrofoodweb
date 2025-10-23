@@ -11,92 +11,88 @@ $telephone = $_SESSION['user_phone'];
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Tableau de bord</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <title>Tableau de bord - Agro Food</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+  <!-- Favicon -->
+  <link href="assets/img/favicon.png" rel="icon">
 
-        main {
-            width: 90%;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+  <!-- Bootstrap -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
 
-        h2 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
+  <style>
+    body {
+        background: url('assets/img/hero_2.jpg') center/cover no-repeat fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: "Open Sans", sans-serif;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            margin: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            transition: 0.3s;
-        }
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
 
-        .btn:hover {
-            transform: scale(1.05);
-        }
+    .dashboard-card h2 {
+        color: #2a7a2e;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
 
-        .btn-produit {
-            background-color: #28a745;
-        }
+    .dashboard-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+    }
 
-        .btn-deconnexion {
-            background-color: #dc3545;
-        }
+    .btn-produit { background-color: #28a745; }
+    .btn-produit:hover { background-color: #218838; }
 
-        .btn-profile {
-            background-color: #17a2b8;
-        }
+    .btn-ajout { background-color: #17a2b8; }
+    .btn-ajout:hover { background-color: #138496; }
 
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            color: #666;
-        }
-    </style>
+    .btn-deconnexion { background-color: #dc3545; }
+    .btn-deconnexion:hover { background-color: #c82333; }
+
+    .dashboard-card img {
+        height: 80px;
+        margin-bottom: 15px;
+    }
+  </style>
 </head>
 <body>
+  <div class="dashboard-card" data-aos="zoom-in">
+    <img src="assets/img/logoagrofoodbon.png" alt="Agro Food">
+    <h2>Bonjour, <?= htmlspecialchars($telephone) ?> 👋</h2>
 
-<header>
-    <h1>👋 Bienvenue sur ton tableau de bord</h1>
-</header>
+    <a href="manage_products.php" class="dashboard-btn btn-produit">🛒 Gérer mes produits</a>
+    <a href="add_product.php" class="dashboard-btn btn-ajout">➕ Ajouter un produit</a>
+    <a href="logout.php" class="dashboard-btn btn-deconnexion">🚪 Déconnexion</a>
 
-<main>
-    <h2>Bonjour, <?= htmlspecialchars($telephone) ?></h2>
+    <p class="mt-3"><a href="index.php"><i class="bi bi-arrow-left"></i> Retour à l’accueil</a></p>
+  </div>
 
-    <!-- ✅ Nouveau bouton : Gérer les produits -->
-    <a href="manage_products.php" class="btn btn-produit">🛒 Gérer mes produits</a>
-
-    <!-- Exemple d'autres boutons -->
-    <a href="add_product.php" class="btn btn-profile">➕ Ajouter un produit</a>
-    <a href="logout.php" class="btn btn-deconnexion">🚪 Déconnexion</a>
-</main>
-
-<footer>
-    <p>&copy; <?= date('Y') ?> AgroFood - Tous droits réservés</p>
-</footer>
-
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
 </body>
 </html>

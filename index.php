@@ -57,6 +57,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.php" class="active">Accueil</a></li>
+           <li><a href="login.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Connexion</a></li>
+       
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -165,7 +167,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <hr>
 
-                <a href="unproduit.php" class="readmore stretched-link"><span>Savoir plus</span><i class="bi bi-arrow-right"></i></a>
+                <!--<a href="produit.php?id=<?= htmlspecialchars($p['id']) ?>" class="readmore stretched-link"><span>Voir</span><i class="bi bi-arrow-right"></i></a>-->
 
               </div>
 
