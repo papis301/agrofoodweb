@@ -51,10 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // --- Insertion dans la base ---
             $stmt = $conn->prepare("
-                INSERT INTO products (name, price, firebase_id, telephone, images, created_at)
-                VALUES (?, ?, ?, ?, ?, NOW())
+                INSERT INTO products (name, price, telephone, images, created_at)
+                VALUES (?, ?, ?, ?, NOW())
             ");
-            $stmt->execute([$name, $price, $user_id, $telephone, $imagesJSON]);
+            $stmt->execute([$name, $price, $telephone, $imagesJSON]);
 
             // ✅ Redirection automatique vers la page de gestion
             header("Location: manage_products.php?success=1");
