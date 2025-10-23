@@ -2,7 +2,7 @@
 session_start();
 
 // ✅ Vérifie si l'utilisateur est connecté
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['phone'])) {
+if (!isset($_SESSION['user_phone'])) {
     header("Location: login.php");
     exit;
 }
@@ -12,7 +12,7 @@ require 'db.php';
 
 // --- Récupération des infos utilisateur ---
 $user_id = $_SESSION['user_id'];
-$telephone = $_SESSION['phone'];
+$telephone = $_SESSION['user_phone'];
 
 // --- Traitement du formulaire ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
