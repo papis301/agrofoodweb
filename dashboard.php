@@ -1,22 +1,22 @@
 <?php
 session_start();
-
-// Vérifie si l'utilisateur est connecté
 if (!isset($_SESSION['user_phone'])) {
     header("Location: login.php");
     exit;
 }
+
+$telephone = $_SESSION['user_phone'];
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tableau de bord - AgroFood</title>
+    <title>Tableau de bord</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
+            background: #f4f6f8;
             margin: 0;
             padding: 0;
         }
@@ -24,74 +24,79 @@ if (!isset($_SESSION['user_phone'])) {
         header {
             background-color: #007bff;
             color: white;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
         }
 
         main {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .info {
+            width: 90%;
+            margin: 40px auto;
             background: white;
-            display: inline-block;
-            padding: 20px 40px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
-        .info p {
-            font-size: 18px;
-            margin: 8px 0;
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
         }
 
-        a.btn {
+        .btn {
             display: inline-block;
-            background-color: #007bff;
-            color: white;
             padding: 12px 20px;
+            margin: 10px;
             border-radius: 8px;
             text-decoration: none;
+            color: white;
             font-weight: bold;
             transition: 0.3s;
-            margin: 10px;
         }
 
-        a.btn:hover {
-            background-color: #0056b3;
+        .btn:hover {
             transform: scale(1.05);
         }
 
-        .logout {
+        .btn-produit {
+            background-color: #28a745;
+        }
+
+        .btn-deconnexion {
             background-color: #dc3545;
         }
 
-        .logout:hover {
-            background-color: #b52a37;
+        .btn-profile {
+            background-color: #17a2b8;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Tableau de bord AgroFood</h1>
+    <h1>👋 Bienvenue sur ton tableau de bord</h1>
 </header>
 
 <main>
-    <div class="info">
-        <h2>Bienvenue 👋</h2>
-        <p><strong>Téléphone :</strong> <?= htmlspecialchars($_SESSION['user_phone']) ?></p>
-        
-        <p><strong>Statut :</strong> <?= htmlspecialchars($_SESSION['statut']) ?></p>
+    <h2>Bonjour, <?= htmlspecialchars($telephone) ?></h2>
 
-        <!-- Bouton vers la gestion des produits -->
-        <a href="manage_products.php" class="btn">🛒 Gérer mes produits</a>
+    <!-- ✅ Nouveau bouton : Gérer les produits -->
+    <a href="manage_products.php" class="btn btn-produit">🛒 Gérer mes produits</a>
 
-        <!-- Bouton de déconnexion -->
-        <a href="logout.php" class="btn logout">🚪 Déconnexion</a>
-    </div>
+    <!-- Exemple d'autres boutons -->
+    <a href="add_product.php" class="btn btn-profile">➕ Ajouter un produit</a>
+    <a href="logout.php" class="btn btn-deconnexion">🚪 Déconnexion</a>
 </main>
+
+<footer>
+    <p>&copy; <?= date('Y') ?> AgroFood - Tous droits réservés</p>
+</footer>
 
 </body>
 </html>

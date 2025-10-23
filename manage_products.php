@@ -1,19 +1,27 @@
 <?php
 session_start();
+
+// ✅ Vérifie si l'utilisateur est connecté
 if (!isset($_SESSION['user_phone'])) {
     header("Location: login.php");
     exit;
 }
 
-// 🔹 Connexion à la base de données MySQL
+// 🔹 Connexion à la base de données PDO
 require 'db.php';
 
 // 🔹 Récupération des produits du téléphone connecté
 $telephone = $_SESSION['user_phone'];
-$sql = "SELECT * FROM products WHERE telephone = '$telephone' ORDER BY created_at DESC";
-$result = $conn->query($sql);
-?>
 
+try {
+    $stmt = $conn->prepare("SELECT * FROM products WHERE telephone = :telephone ORDER BY created_at DESC");
+    $stmt->bindParam(':telephone', $telephone, PDO::PARAM_STR);
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Erreur lors de la récupération des produits : " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -98,6 +106,11 @@ $result = $conn->query($sql);
             color: #777;
             margin-top: 30px;
         }
+
+        img {
+            border-radius: 5px;
+            margin: 2px;
+        }
     </style>
 </head>
 <body>
@@ -111,21 +124,20 @@ $result = $conn->query($sql);
     <a href="dashboard.php" class="btn">🏠 Retour au tableau de bord</a>
 
     <?php if (isset($_GET['success'])): ?>
-    <p style="color:green; text-align:center;">✅ Produit ajouté avec succès !</p>
+        <p style="color:green; text-align:center;">✅ Produit ajouté avec succès !</p>
     <?php endif; ?>
 
-
-    <?php if ($result->num_rows > 0): ?>
+    <?php if (!empty($products)): ?>
         <table>
             <tr>
                 <th>ID</th>
                 <th>Nom</th>
                 <th>Prix</th>
-                <th>Image</th>
+                <th>Images</th>
                 <th>Date</th>
                 <th>Actions</th>
             </tr>
-            <?php while ($row = $result->fetch_assoc()): ?>
+            <?php foreach ($products as $row): ?>
                 <tr>
                     <td><?= htmlspecialchars($row['id']) ?></td>
                     <td><?= htmlspecialchars($row['name']) ?></td>
@@ -134,9 +146,9 @@ $result = $conn->query($sql);
                         <?php 
                         if (!empty($row['images'])) {
                             $images = json_decode($row['images'], true);
-                            if (is_array($images)) {
+                            if (is_array($images) && count($images) > 0) {
                                 foreach ($images as $img) {
-                                    echo "<img src='".htmlspecialchars($img)."' width='60' height='60' style='border-radius:5px; margin:2px;'>";
+                                    echo "<img src='" . htmlspecialchars($img) . "' width='60' height='60'>";
                                 }
                             } else {
                                 echo "Aucune";
@@ -148,11 +160,11 @@ $result = $conn->query($sql);
                     </td>
                     <td><?= htmlspecialchars($row['created_at']) ?></td>
                     <td class="actions">
-                        <a href="edit_product.php?id=<?= $row['id'] ?>" class="edit">✏️ Modifier</a>
-                        <a href="delete_product.php?id=<?= $row['id'] ?>" class="delete" onclick="return confirm('Supprimer ce produit ?');">🗑 Supprimer</a>
+                        <a href="edit_product.php?id=<?= urlencode($row['id']) ?>" class="edit">✏️ Modifier</a>
+                        <a href="delete_product.php?id=<?= urlencode($row['id']) ?>" class="delete" onclick="return confirm('Supprimer ce produit ?');">🗑 Supprimer</a>
                     </td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </table>
     <?php else: ?>
         <p class="empty">Aucun produit trouvé.</p>
@@ -161,5 +173,3 @@ $result = $conn->query($sql);
 
 </body>
 </html>
-
-<?php $conn->close(); ?>

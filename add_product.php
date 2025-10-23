@@ -2,7 +2,7 @@
 session_start();
 
 // ✅ Vérifie si l'utilisateur est connecté
-if (!isset($_SESSION['user_phone']) || !isset($_SESSION['firebase_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['phone'])) {
     header("Location: login.php");
     exit;
 }
@@ -11,43 +11,57 @@ if (!isset($_SESSION['user_phone']) || !isset($_SESSION['firebase_id'])) {
 require 'db.php';
 
 // --- Récupération des infos utilisateur ---
-$telephone = $_SESSION['user_phone'];
-$firebase_id = $_SESSION['firebase_id'];
+$user_id = $_SESSION['user_id'];
+$telephone = $_SESSION['phone'];
 
 // --- Traitement du formulaire ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']);
-    $price = trim($_POST['price']);
+    $name = trim($_POST['name'] ?? '');
+    $price = trim($_POST['price'] ?? '');
     $uploadedImages = [];
 
-    // 📸 Upload de plusieurs images
-    if (!empty($_FILES['images']['name'][0])) {
-        $targetDir = "uploads/";
-        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+    if (empty($name) || empty($price)) {
+        echo "<p style='color:red;'>❌ Tous les champs sont obligatoires.</p>";
+    } else {
+        // 📸 Upload de plusieurs images
+        if (!empty($_FILES['images']['name'][0])) {
+            $targetDir = "uploads/";
+            if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
 
-        foreach ($_FILES['images']['tmp_name'] as $key => $tmpName) {
-            $fileName = basename($_FILES['images']['name'][$key]);
-            $targetFile = $targetDir . time() . "_" . $key . "_" . $fileName;
+            foreach ($_FILES['images']['tmp_name'] as $key => $tmpName) {
+                $fileName = basename($_FILES['images']['name'][$key]);
+                $targetFile = $targetDir . time() . "_" . $key . "_" . preg_replace('/\s+/', '_', $fileName);
 
-            if (move_uploaded_file($tmpName, $targetFile)) {
-                $uploadedImages[] = $targetFile;
+                // Vérifie le type MIME pour éviter les fichiers malveillants
+                $fileType = mime_content_type($tmpName);
+                if (strpos($fileType, 'image') === false) {
+                    echo "<p style='color:red;'>❌ Le fichier $fileName n'est pas une image valide.</p>";
+                    continue;
+                }
+
+                if (move_uploaded_file($tmpName, $targetFile)) {
+                    $uploadedImages[] = $targetFile;
+                }
             }
         }
-    }
 
-    // On stocke les chemins d'images en JSON
-    $imagesJSON = json_encode($uploadedImages);
+        // On stocke les chemins d'images en JSON
+        $imagesJSON = json_encode($uploadedImages);
 
-    // --- Insertion dans la base ---
-    $stmt = $conn->prepare("INSERT INTO products (name, price, firebase_id, telephone, images) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $name, $price, $firebase_id, $telephone, $imagesJSON);
+        try {
+            // --- Insertion dans la base ---
+            $stmt = $conn->prepare("
+                INSERT INTO products (name, price, firebase_id, telephone, images, created_at)
+                VALUES (?, ?, ?, ?, ?, NOW())
+            ");
+            $stmt->execute([$name, $price, $user_id, $telephone, $imagesJSON]);
 
-    if ($stmt->execute()) {
-        // ✅ Redirection automatique vers la page de gestion
-        header("Location: manage_products.php?success=1");
-        exit;
-    } else {
-        echo "<p style='color:red;'>❌ Erreur : " . $conn->error . "</p>";
+            // ✅ Redirection automatique vers la page de gestion
+            header("Location: manage_products.php?success=1");
+            exit;
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>🔥 Erreur MySQL : " . $e->getMessage() . "</p>";
+        }
     }
 }
 ?>

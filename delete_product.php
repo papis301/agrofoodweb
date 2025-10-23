@@ -1,44 +1,48 @@
 <?php
 session_start();
-
-// Vérifie la session
-if (!isset($_SESSION['user_phone']) || !isset($_SESSION['firebase_id'])) {
+if (!isset($_SESSION['user_phone'])) {
     header("Location: login.php");
     exit;
 }
 
-// Vérifie si l'ID est présent
-if (!isset($_GET['id'])) {
-    header("Location: list_products.php");
-    exit;
-}
-
-$product_id = intval($_GET['id']);
-
-// --- Connexion MySQL ---
 require 'db.php';
 
-// --- Récupère le produit pour supprimer ses images ---
-$result = $conn->query("SELECT images FROM products WHERE id = $product_id");
-if ($result->num_rows === 0) {
-    header("Location: list_products.php");
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: manage_products.php");
     exit;
 }
 
-$product = $result->fetch_assoc();
-$images = json_decode($product['images'] ?? '[]', true) ?: [];
+$product_id = (int) $_GET['id'];
+$telephone = $_SESSION['user_phone'];
 
-// Supprime les fichiers images
-foreach ($images as $img) {
-    if (file_exists($img)) {
-        unlink($img);
+try {
+    // 🔹 Récupère les images pour les supprimer du dossier
+    $stmt = $conn->prepare("SELECT images FROM products WHERE id = :id AND telephone = :telephone");
+    $stmt->execute([':id' => $product_id, ':telephone' => $telephone]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$product) {
+        die("❌ Produit introuvable ou non autorisé.");
     }
+
+    // 🔹 Supprime les fichiers image (si présents)
+    $images = json_decode($product['images'], true);
+    if (is_array($images)) {
+        foreach ($images as $img) {
+            if (file_exists($img)) {
+                unlink($img);
+            }
+        }
+    }
+
+    // 🔹 Supprime le produit de la base
+    $delete = $conn->prepare("DELETE FROM products WHERE id = :id AND telephone = :telephone");
+    $delete->execute([':id' => $product_id, ':telephone' => $telephone]);
+
+    header("Location: manage_products.php?deleted=1");
+    exit;
+
+} catch (PDOException $e) {
+    die("Erreur : " . $e->getMessage());
 }
-
-// Supprime le produit de la base
-$conn->query("DELETE FROM products WHERE id = $product_id");
-
-// Redirige vers la liste
-header("Location: manage_products.php?deleted=1");
-exit;
 ?>

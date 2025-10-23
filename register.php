@@ -2,50 +2,41 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require 'vendor/autoload.php';
-require 'firebase_config.php';
 
-use Google\Cloud\Core\Timestamp;
+require 'db.php'; // connexion PDO
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = trim($_POST['phone'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Vérification de base
     if (empty($phone) || empty($password)) {
         echo "❌ Tous les champs sont obligatoires.";
         exit;
     }
 
     try {
-        $db = getFirestore();
-        $users = $db->collection('usersagrofood');
+        // Vérifie si le numéro existe déjà
+        $stmt = $conn->prepare("SELECT id FROM usersagrofood WHERE phone = ?");
+        $stmt->execute([$phone]);
 
-        // Vérifie si le téléphone existe déjà
-        $existing = $users->where('phone', '=', $phone)->documents();
-        if (!$existing->isEmpty()) {
-            echo "⚠️ Ce numéro existe déjà dans Firestore.";
+        if ($stmt->rowCount() > 0) {
+            echo "⚠️ Ce numéro existe déjà dans la base de données.";
             exit;
         }
 
-        // Données à enregistrer
-        $userData = [
-            'phone' => $phone,
-            'password' => $password,
-            'solde' => 0,
-            'statut' => 'activé',
-            'date_creation' => date('Y-m-d H:i:s'),
-            'type_inscription' => 'ordinateur'
-        ];
+        // Hachage du mot de passe
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Ajout dans Firestore
-        $users->add($userData);
+        // Insertion dans la table
+        $insert = $conn->prepare("INSERT INTO usersagrofood (phone, password, solde, statut, type_inscription)
+                                  VALUES (?, ?, 0, 'activé', 'ordinateur')");
+        $insert->execute([$phone, $hashedPassword]);
 
         echo "✅ Inscription réussie ! <a href='login.php'>Se connecter</a>";
         exit;
 
-    } catch (Exception $e) {
-        echo "🔥 Erreur Firestore : " . $e->getMessage();
+    } catch (PDOException $e) {
+        echo "🔥 Erreur MySQL : " . $e->getMessage();
         exit;
     }
 }

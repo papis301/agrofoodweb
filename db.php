@@ -1,17 +1,13 @@
 <?php
-// --- Configuration de la base de données ---
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "agroweb2";
+$host = "localhost"; // ou ton hôte MySQL
+$user = "root";      // utilisateur MySQL
+$pass = "";          // mot de passe MySQL
+$dbname = "agroweb2"; // ta base de données
 
-// Crée la connexion
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-// Vérifie la connexion
-if ($conn->connect_error) {
-    die("Erreur de connexion à la base : " . $conn->connect_error);
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
-
-// Optionnel : définir le jeu de caractères
-$conn->set_charset("utf8");
+?>
