@@ -1,175 +1,178 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
+require 'db.php';
 
-// ✅ Vérifie si l'utilisateur est connecté
+// Vérification de la session
 if (!isset($_SESSION['user_phone'])) {
     header("Location: login.php");
     exit;
 }
 
-// 🔹 Connexion à la base de données PDO
-require 'db.php';
+$user_phone = $_SESSION['user_phone'];
 
-// 🔹 Récupération des produits du téléphone connecté
-$telephone = $_SESSION['user_phone'];
-
-try {
-    $stmt = $conn->prepare("SELECT * FROM products WHERE telephone = :telephone ORDER BY created_at DESC");
-    $stmt->bindParam(':telephone', $telephone, PDO::PARAM_STR);
-    $stmt->execute();
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Erreur lors de la récupération des produits : " . $e->getMessage());
-}
+// Récupération des produits
+$stmt = $conn->prepare("SELECT * FROM products WHERE telephone = :phone ORDER BY id DESC");
+$stmt->execute([':phone' => $user_phone]);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Gérer mes produits</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <title>Gérer mes produits - Agro Food</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
+  <!-- Favicon -->
+  <link href="assets/img/favicon.png" rel="icon">
 
-        main {
-            width: 90%;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
+  <!-- Bootstrap -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+  <style>
+    body {
+        background: url('assets/img/hero_2.jpg') center/cover no-repeat fixed;
+        min-height: 100vh;
+        font-family: "Open Sans", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 60px;
+    }
 
-        table, th, td {
-            border: 1px solid #ccc;
-        }
+    .product-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        width: 95%;
+        max-width: 1000px;
+        margin-bottom: 50px;
+    }
 
-        th {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-        }
+    h2 {
+        color: #2a7a2e;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
 
-        td {
-            padding: 10px;
-            text-align: center;
-        }
+    .btn-agro {
+        background-color: #2a7a2e;
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
 
-        .actions a {
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            color: white;
-        }
+    .btn-agro:hover {
+        background-color: #256926;
+        transform: scale(1.05);
+    }
 
-        .edit {
-            background: #28a745;
-        }
+    th {
+        background-color: #2a7a2e;
+        color: white;
+        text-align: center;
+    }
 
-        .delete {
-            background: #dc3545;
-        }
+    td {
+        vertical-align: middle !important;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            background: #007bff;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            margin: 10px 5px;
-        }
-
-        .btn:hover {
-            background: #0056b3;
-        }
-
-        .empty {
-            text-align: center;
-            color: #777;
-            margin-top: 30px;
-        }
-
-        img {
-            border-radius: 5px;
-            margin: 2px;
-        }
-    </style>
+    img {
+        border-radius: 10px;
+        object-fit: cover;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    <h1>🛒 Gérer mes produits</h1>
-</header>
+<div class="product-card" data-aos="fade-up">
+    <div class="text-center mb-4">
+        <img src="assets/img/logoagrofoodbon.png" alt="Logo AgroFood" style="height:80px;">
+        <h2>Mes produits</h2>
+    </div>
 
-<main>
-    <a href="add_product.php" class="btn">➕ Ajouter un produit</a>
-    <a href="dashboard.php" class="btn">🏠 Retour au tableau de bord</a>
+    <div class="text-end mb-3">
+        <a href="add_product.php" class="btn btn-agro"><i class="bi bi-plus-circle"></i> Ajouter un produit</a>
+        <a href="dashboard.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Tableau de bord</a>
+    </div>
 
-    <?php if (isset($_GET['success'])): ?>
-        <p style="color:green; text-align:center;">✅ Produit ajouté avec succès !</p>
-    <?php endif; ?>
-
-    <?php if (!empty($products)): ?>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prix</th>
-                <th>Images</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-            <?php foreach ($products as $row): ?>
-                <tr>
-                    <td><?= htmlspecialchars($row['id']) ?></td>
-                    <td><?= htmlspecialchars($row['name']) ?></td>
-                    <td><?= htmlspecialchars($row['price']) ?> FCFA</td>
-                    <td>
-                        <?php 
-                        if (!empty($row['images'])) {
-                            $images = json_decode($row['images'], true);
-                            if (is_array($images) && count($images) > 0) {
-                                foreach ($images as $img) {
-                                    echo "<img src='" . htmlspecialchars($img) . "' width='60' height='60'>";
+    <?php if (empty($products)): ?>
+        <div class="alert alert-info text-center">
+            Aucun produit ajouté pour le moment. <br>
+            <a href="add_product.php" class="btn btn-agro mt-2">Ajouter mon premier produit</a>
+        </div>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Images</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Catégorie</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($products as $p): ?>
+                    <tr>
+                        <td>
+                            <?php 
+                            if (!empty($p['images'])) {
+                                $images = json_decode($p['images'], true);
+                                if (is_array($images) && count($images) > 0) {
+                                    foreach ($images as $img) {
+                                        $path = 'uploads/' . basename($img);
+                                        if (file_exists($path)) {
+                                            echo "<img src='" . htmlspecialchars($path) . "' width='60' height='60' style='margin:3px;'>";
+                                        } else {
+                                            echo "<span style='color:red;'>Image introuvable</span>";
+                                        }
+                                    }
+                                } else {
+                                    echo "Aucune image";
                                 }
                             } else {
-                                echo "Aucune";
+                                echo "Aucune image";
                             }
-                        } else {
-                            echo "Aucune";
-                        }
-                        ?>
-                    </td>
-                    <td><?= htmlspecialchars($row['created_at']) ?></td>
-                    <td class="actions">
-                        <a href="edit_product.php?id=<?= urlencode($row['id']) ?>" class="edit">✏️ Modifier</a>
-                        <a href="delete_product.php?id=<?= urlencode($row['id']) ?>" class="delete" onclick="return confirm('Supprimer ce produit ?');">🗑 Supprimer</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php else: ?>
-        <p class="empty">Aucun produit trouvé.</p>
+                            ?>
+                        </td>
+                        <td><?= htmlspecialchars($p['name'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($p['price'] ?? '') ?> FCFA</td>
+                        <td><?= htmlspecialchars($p['category'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($p['description'] ?? '') ?></td>
+                        <td>
+                            <a href="produit.php?id=<?= $p['id'] ?>" class="btn btn-info btn-sm">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="edit_product.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer ce produit ?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
-</main>
+</div>
 
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/aos/aos.js"></script>
+<script>AOS.init();</script>
 </body>
 </html>
