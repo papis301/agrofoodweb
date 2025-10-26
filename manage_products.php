@@ -22,76 +22,81 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Gérer mes produits - Agro Food</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Gérer mes produits - Agro Food</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="assets/img/favicon.png" rel="icon">
+<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="assets/vendor/aos/aos.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- Favicon -->
-  <link href="assets/img/favicon.png" rel="icon">
-
-  <!-- Bootstrap -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/css/main.css" rel="stylesheet">
-
-  <style>
-    body {
-        background: url('assets/img/hero_2.jpg') center/cover no-repeat fixed;
-        min-height: 100vh;
-        font-family: "Open Sans", sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 60px;
-    }
-
+<style>
+body {
+    background: url('assets/img/hero_2.jpg') center/cover no-repeat fixed;
+    font-family: "Open Sans", sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+}
+.product-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto;
+}
+h2 {
+    color: #2a7a2e;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+.btn-agro {
+    background-color: #2a7a2e;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.btn-agro:hover {
+    background-color: #256926;
+    transform: scale(1.05);
+}
+.table-responsive {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    min-width: 600px;
+}
+th {
+    background-color: #2a7a2e;
+    color: white;
+    text-align: center;
+}
+td {
+    vertical-align: middle !important;
+}
+td img {
+    border-radius: 10px;
+    object-fit: cover;
+}
+@media (max-width: 768px) {
     .product-card {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        width: 95%;
-        max-width: 1000px;
-        margin-bottom: 50px;
+        padding: 20px;
     }
-
-    h2 {
-        color: #2a7a2e;
-        text-align: center;
-        font-weight: 700;
-        margin-bottom: 25px;
+    table {
+        font-size: 14px;
     }
-
-    .btn-agro {
-        background-color: #2a7a2e;
-        border: none;
-        color: white;
-        padding: 8px 15px;
-        border-radius: 8px;
-        transition: 0.3s;
+    td img {
+        width: 50px;
+        height: 50px;
     }
-
-    .btn-agro:hover {
-        background-color: #256926;
-        transform: scale(1.05);
-    }
-
-    th {
-        background-color: #2a7a2e;
-        color: white;
-        text-align: center;
-    }
-
-    td {
-        vertical-align: middle !important;
-    }
-
-    img {
-        border-radius: 10px;
-        object-fit: cover;
-    }
-  </style>
+}
+</style>
 </head>
 <body>
 

@@ -1,6 +1,9 @@
 <?php
 require 'db.php';
-
+session_start();
+if (!isset($_SESSION['user_phone'])) {
+    exit;
+}
 // Récupérer tous les produits
 $stmt = $conn->query("SELECT * FROM products ORDER BY created_at DESC");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,11 +60,15 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.php" class="active">Accueil</a></li>
-           <li><a href="login.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Connexion</a></li>
-       
+          <?php if (isset($_SESSION['user_phone'])): ?>
+            <li><a href="dashboard.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Tableau de bord</a></li>
+          <?php else: ?>
+            <li><a href="login.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Connexion</a></li>
+          <?php endif; ?>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
+
 
     </div>
   </header>
