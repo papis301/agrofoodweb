@@ -174,7 +174,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <hr>
 
-                <!--<a href="produit.php?id=<?= htmlspecialchars($p['id']) ?>" class="readmore stretched-link"><span>Voir</span><i class="bi bi-arrow-right"></i></a>-->
+              <a href="produit.php?id=<?= htmlspecialchars($p['id']) ?>" class="stretched-link"></a>
 
               </div>
 
