@@ -17,6 +17,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+    <?php include 'analytics.php'; ?>
 <head>
   <meta charset="UTF-8">
   <title>Gestion des utilisateurs - Agro Food</title>

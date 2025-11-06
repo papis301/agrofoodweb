@@ -1,21 +1,36 @@
 <!-- header.php -->
-<header class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold text-success" href="index.php">
-      🌾 AgriCulture
-    </a>
+<?php include 'analytics.php'; ?>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Agro Food</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="index.php">Accueil</a></li>
-        <li class="nav-item"><a class="nav-link" href="register.php">S’inscrire</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.php">Connexion</a></li>
-        <li class="nav-item"><a class="nav-link" href="dashboard.php">Tableau de bord</a></li>
-      </ul>
-    </div>
-  </div>
-</header>
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Marcellus:wght@400&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: AgriCulture
+  * Template URL: https://It Solution.com/agriculture-bootstrap-website-template/
+  * Updated: Aug 07 2024 with Bootstrap v5.3.3
+  * Author: It Solution.com
+  * License: https://It Solution.com/license/
+  ======================================================== -->
+</head>

@@ -21,6 +21,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="fr">
+    <?php include 'analytics.php'; ?>
 <head>
 <meta charset="UTF-8">
 <title>Gérer mes produits - Agro Food</title>

@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+    <?php include 'analytics.php'; ?>
 <head>
   <meta charset="UTF-8">
   <title>Connexion - Agro Food</title>

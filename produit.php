@@ -30,6 +30,7 @@ $images = json_decode($product_images, true);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+    <?php include 'analytics.php'; ?>
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($product_name) ?> - Agro Food</title>

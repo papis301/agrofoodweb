@@ -13,6 +13,7 @@ $telephone = $_SESSION['user_phone'];
 
 <!DOCTYPE html>
 <html lang="fr">
+<?php include 'analytics.php'; ?>
 <head>
   <meta charset="UTF-8">
   <title>Tableau de bord - Agro Food</title>
