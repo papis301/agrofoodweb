@@ -28,7 +28,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.php" class="active">Accueil</a></li>
+          
           <?php if (isset($_SESSION['user_phone'])): ?>
+            <li><a href="recherche_produit.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">🔍 Rechercher un produit</a></li>
+            <li><a href="liste_demandes.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">📢 Demandes de produits</a></li>
+
             <li><a href="dashboard.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Tableau de bord</a></li>
           <?php else: ?>
             <li><a href="login.php" class="btn btn-success ms-3 px-3 py-1" style="color: white; border-radius: 5px;">Connexion</a></li>
